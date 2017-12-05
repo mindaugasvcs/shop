@@ -36,7 +36,8 @@
                 <div class="collapse navbar-collapse" id="app-navbar-collapse">
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
-                        &nbsp;
+                        <li><a href="/products">Visi produktai</a></li>
+                        <li><a href="/categories">Visos kategorijos</a></li>
                     </ul>
 
                     <!-- Right Side Of Navbar -->

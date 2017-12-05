@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class ProductsController extends Controller
+class CategoriesController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -13,9 +13,9 @@ class ProductsController extends Controller
      */
     public function index()
     {
-        $products = \App\Product::all();
+        $categories = \App\Category::all();
 
-        return view('products.all', ['products' => $products]);
+        return view('categories.all', ['categories' => $categories]);
     }
 
     /**
@@ -25,7 +25,7 @@ class ProductsController extends Controller
      */
     public function create()
     {
-        return view('products.create');
+        return view('categories.create');
     }
 
     /**
@@ -38,19 +38,15 @@ class ProductsController extends Controller
     {
         $request->validate([
                'name' => 'required|string|max:100',
-               'price' => 'required|numeric',
-               'photo_url' => 'required|image'
+               // 'parent_id' => 'integer'
         ]);
 
-        $filePath = $request->file('photo_url')->store('/public/products');
+        $category = new \App\Category();
+        $category->name = $request->input('name');
+        $category->parent_id = $request->input('parent_id');
+        $category->save();
 
-        $product = new \App\Product();
-        $product->name = $request->input('name');
-        $product->price = $request->input('price');
-        $product->photo_url = $filePath;
-        $product->save();
-
-        return redirect('/products');
+        return redirect(route('categories.index'));
     }
 
     /**
@@ -61,9 +57,9 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        $product = \App\Product::find($id);
+        $category = \App\Category::find($id);
 
-        return view('products.single', ['product' => $product]);
+        return view('categories.single', ['category' => $category]);
     }
 
     /**
@@ -74,9 +70,9 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        $product = \App\Product::find($id);
+        $category = \App\Category::find($id);
 
-        return view('products.edit', ['product' => $product]);
+        return view('categories.edit', ['category' => $category]);
     }
 
     /**
