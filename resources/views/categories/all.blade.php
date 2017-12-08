@@ -6,22 +6,37 @@
         <div class="col-md-8 col-md-offset-2">
             <div class="panel panel-default">
                 <div class="panel-heading">Visos produktu kategorijos</div>
-
                 <div class="panel-body">
                     <a href="{{ route('categories.create') }}">Naujas irasas</a>
                     <table class="table">
-                        <th>ID</th>
-                        <th>Pavadinimas</th>
-                        <th>Priklauso</th>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Pilnas pavadinimas</th>
+                                <th></th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody>
 @foreach ($categories as $category)
-                        <tr>
-                            <td>{{ $category->id }}</td>
-                            <td>{{ $category->name }}</td>
-                            <td>{{ $category->name }}</td> <!-- to do -->
-                            <td><a href="{{ route('categories.edit', $category->id) }}">Redaguoti</a></td>
-                            <td><a href="{{ route('categories.destroy', $category->id) }}">Trinti</a></td>
-                        </tr>
+                            <tr>
+                                <td>{{ $category->id }}</td>
+    @if (count($category->parents))
+                                <td>{{ $category->parents->implode('name', '\\') }}\{{ $category->name }}</td>
+    @else
+                                <td>{{ $category->name }}</td>
+    @endif
+                                <td><a href="{{ route('categories.edit', $category->id) }}">Redaguoti</a></td>
+                                <td>
+                                    <form method="POST" action="{{ route('categories.destroy', $category->id) }}">
+                                        {{ csrf_field() }}
+                                        {{ method_field('DELETE') }}
+                                        <button type="submit">Trinti</button>
+                                    </form>
+                                </td>
+                            </tr>
 @endforeach
+                        </tbody>
                     </table>
                 </div>
             </div>

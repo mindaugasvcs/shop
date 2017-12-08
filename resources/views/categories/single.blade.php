@@ -10,12 +10,14 @@
                 <div class="panel-body">
                     <table class="table">
                         <th>ID</th>
-                        <th>Pavadinimas</th>
-                        <th>Priklauso</th>
+                        <th>Pilnas pavadinimas</th>
                         <tr>
                             <td>{{ $category->id }}</td>
+    @if (count($category->parents))
+                            <td>{{ $category->parents->implode('name', '\\') }}\{{ $category->name }}</td>
+    @else
                             <td>{{ $category->name }}</td>
-                            <td>{{ $category->name }}</td> <!-- to do -->
+    @endif
                         </tr>
                     </table>
                 </div>

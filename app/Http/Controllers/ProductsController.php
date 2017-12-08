@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ProductsController extends Controller
 {
@@ -37,20 +38,20 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-               'name' => 'required|string|max:100',
-               'price' => 'required|numeric',
-               'photo_url' => 'required|image'
+            'name' => 'required|string|max:100',
+            'price' => 'required|numeric',
+            'photo_url' => 'nullable|image'
         ]);
-
-        $filePath = $request->file('photo_url')->store('/public/products');
 
         $product = new \App\Product();
         $product->name = $request->input('name');
         $product->price = $request->input('price');
-        $product->photo_url = $filePath;
+        if ($request->hasFile('photo_url')) {
+            $product->photo_url = $request->file('photo_url')->store('public/products');
+        }
         $product->save();
 
-        return redirect('/products');
+        return redirect()->route('products.index');
     }
 
     /**
@@ -88,7 +89,27 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+           'name' => 'required|string|max:100',
+           'price' => 'required|numeric',
+           'photo_url' => 'nullable|image'
+        ]);
+
+        $product = \App\Product::find($id);
+        $product->name = $request->input('name');
+        $product->price = $request->input('price');
+
+        if ($request->hasFile('photo_url')) {
+            Storage::delete($product->photo_url);
+            $product->photo_url = $request->file('photo_url')->store('public/products');
+        }elseif ($request->has('delete_photo')) {
+            Storage::delete($product->photo_url);
+            $product->photo_url = null;
+        }
+
+        $product->save();
+
+        return redirect()->route('products.index');
     }
 
     /**
@@ -99,6 +120,10 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = \App\Product::find($id);
+        Storage::delete($product->photo_url);
+        $product->delete();
+
+        return redirect()->route('products.index');
     }
 }

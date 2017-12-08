@@ -23,8 +23,9 @@
                         <br>
                         <input type="text" name="price" value="{{ old('price', $product->price) }}" class="form-control" placeholder="Kaina">
                         <br>
-                        <input type="file" name="photo_url" value="{{ old('photo_url', $product->photo_url) }}" class="form-control" placeholder="Paveiksliukas">
+                        <input type="file" name="photo_url" value="{{ old(Storage::url('photo_url'), Storage::url($product->photo_url)) }}" class="form-control" placeholder="Paveiksliukas">
                         <br>
+                        <input type="checkbox" name="delete_photo" value="delete_photo">Trinti paveiksliuka<br>
                         <button class="btn btn-lg btn-primary btn-block" type="submit">Isaugoti</button>
                     </form>
                 </div>

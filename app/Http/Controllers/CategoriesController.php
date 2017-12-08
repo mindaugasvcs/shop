@@ -25,7 +25,9 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        return view('categories.create');
+        $categories = \App\Category::all();
+
+        return view('categories.create', ['categories' => $categories]);
     }
 
     /**
@@ -37,8 +39,8 @@ class CategoriesController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-               'name' => 'required|string|max:100',
-               // 'parent_id' => 'integer'
+            'name' => 'required|string|max:100',
+            'parent_id' => 'nullable|integer'
         ]);
 
         $category = new \App\Category();
@@ -72,7 +74,9 @@ class CategoriesController extends Controller
     {
         $category = \App\Category::find($id);
 
-        return view('categories.edit', ['category' => $category]);
+        $categories = \App\Category::all();
+
+        return view('categories.edit', ['category' => $category, 'categories' => $categories]);
     }
 
     /**
@@ -84,7 +88,28 @@ class CategoriesController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $request->validate([
+               'name' => 'sometimes|required|string|max:100',
+               'parent_id' => 'nullable|integer'
+        ]);
+
+        $category = \App\Category::find($id);
+
+        if ($request->has('name')) {
+            $category->name = $request->input('name');
+        }
+
+        if ($request->input('parent_id')) {
+            if ($request->input('parent_id') != $category->id) {
+                $category->parent_id = $request->input('parent_id');
+            }
+        } else {
+            $category->parent_id = null;
+        }
+
+        $category->save();
+
+        return redirect(route('categories.index'));
     }
 
     /**
@@ -95,6 +120,9 @@ class CategoriesController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $category = \App\Category::find($id);
+        $category->delete();
+
+        return redirect(route('categories.index'));
     }
 }

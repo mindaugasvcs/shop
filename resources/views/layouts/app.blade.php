@@ -77,5 +77,17 @@
 
     <!-- Scripts -->
     <script src="{{ asset('js/app.js') }}"></script>
+    <script type="text/javascript">
+        $('#confirm-delete-product-dialog').on('show.bs.modal', function (event) {
+            var button = $(event.relatedTarget); // Button that triggered the modal
+            var name = button.data('name'); // Extract info from data-* attributes
+            // Update the modal's content. We'll use jQuery here, but you could use a data binding library or other methods instead.
+            var modal = $(this);
+            modal.find('.modal-body p').text('Ar tikrai norite istrinti ' + name + ' ?');
+            modal.find('.modal-footer .btn-primary').on('click', function (event) {
+                button.parent().submit();
+            });
+        });
+    </script>
 </body>
 </html>
